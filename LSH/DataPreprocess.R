@@ -1,19 +1,25 @@
+#【数据结构声明】
+pointIndex = 1 
+querySet <- c() #查询点索引集合
 pointSet = data.frame(
   index = c(),
   x = c(),
   y = c(),
   nearest = c(),
-  R = c()
+  R = c(),
+  label = c()
 )#如果该点是查询点，则nesarest中存放利他最近的点的索引，否则为NA; R为离查询点最近的邻近点点距
 
 
+#【参数声明】
+queryN <- 10     #待生成的查询点总数
+noiseN <- 1000    #带生成的干扰点总数
+d = 3           #邻近点方块间距
+c = 3           #cRNN中的距离倍数参数c
+
+
+
 #产生查询点和邻近点
-queryN <- 5     #待生成的查询点总数
-noiseN <- 95    #带生成的干扰点总数
-d = 2           #邻近点方块间距
-c = 2           #cRNN中的距离倍数参数c
-pointIndex = 1
-querySet <- c() #查询点索引集合
 repeat{
   
   #产生查询点
@@ -28,7 +34,8 @@ repeat{
     x = c(queryPoint[1]),
     y = c(queryPoint[2]),
     nearest = c(NA),
-    R = c(NA)
+    R = c(NA),
+    label = c('query')
   )
   pointSet <- rbind(pointSet,newPoint)
   pointIndex = pointIndex + 1
@@ -46,7 +53,8 @@ repeat{
     x = c(px),
     y = c(py),
     nearest = c(NA),
-    R = c(NA)
+    R = c(NA),
+    label = c('neighbor')
   )
   pointSet <- rbind(pointSet,newPoint)
   pointSet[pointIndex-1,4] = pointIndex #更新查询点的最邻近点索引
@@ -69,12 +77,22 @@ repeat{
     x = c(noisePoint[1]),
     y = c(noisePoint[2]),
     nearest = c(NA),
-    R = c(NA)
+    R = c(NA),
+    label = c('noise')
   )
   pointSet <- rbind(pointSet,newPoint)
   pointIndex = pointIndex + 1
   
   #退出判断
-  if(pointIndex >= 2*queryN + noiseN){break}
+  if(pointIndex > 2*queryN + noiseN){break}
 }
+
+
+#绘图
+library("ggplot2")
+# 基函数
+ggplot(pointSet, aes(x = x, y = y, colour = label)) +
+  # 散点图函数
+  geom_point()
+
 
