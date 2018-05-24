@@ -9,14 +9,14 @@ Dist <- function(x,i,j){
   result
 }
 
-check <- function(x,querySet,px,py){
+check <- function(x,querySet,px,py,c){
   result <- TRUE
   for(i in querySet){
     q <- x[which(x$index == i),]
     qx <- q[[2]]
     qy <- q[[3]]
     d <- sqrt((qx - px)^2 + (qy - py)^2)
-    if(d <= q[[5]]){
+    if(d <= c*q[[5]]){
       result <- FALSE
     }
   }

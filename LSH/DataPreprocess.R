@@ -11,6 +11,7 @@ pointSet = data.frame(
 queryN <- 5     #待生成的查询点总数
 noiseN <- 95    #带生成的干扰点总数
 d = 2           #邻近点方块间距
+c = 2           #cRNN中的距离倍数参数c
 pointIndex = 1
 querySet <- c() #查询点索引集合
 repeat{
@@ -20,7 +21,7 @@ repeat{
   queryPoint <- c()
   repeat{                           #产生合格的新点x,y坐标
     queryPoint <- floor(runif(n = 2,min = 0,max = 100))
-    if(check(pointSet,querySet,queryPoint[1],queryPoint[2])){break}
+    if(check(pointSet,querySet,queryPoint[1],queryPoint[2],c)){break}
   }
   newPoint = data.frame(
     index = c(pointIndex),
@@ -38,7 +39,7 @@ repeat{
   repeat{
     px = floor(runif(n = 1,min = queryPoint[1] - d, max = queryPoint[1] + d))
     py = floor(runif(n = 1,min = queryPoint[2] - d, max = queryPoint[2] + d))
-    if((px!=queryPoint[1])&&(py!=queryPoint[2]&&check(pointSet,querySet,px,py))){break}
+    if((px!=queryPoint[1])&&(py!=queryPoint[2]&&check(pointSet,querySet,px,py,c))){break}
   }
   newPoint = data.frame(
     index = c(pointIndex),
@@ -54,5 +55,26 @@ repeat{
   pointIndex = pointIndex + 1
   #退出判断
   if(pointIndex >= 2*queryN){break}
+}
+
+repeat{
+  #产生干扰点
+  noisePoint <- c()
+  repeat{                           #产生合格的新点x,y坐标
+    noisePoint <- floor(runif(n = 2,min = 0,max = 100))
+    if(check(pointSet,querySet,noisePoint[1],noisePoint[2],c)){break}
+  }
+  newPoint = data.frame(
+    index = c(pointIndex),
+    x = c(noisePoint[1]),
+    y = c(noisePoint[2]),
+    nearest = c(NA),
+    R = c(NA)
+  )
+  pointSet <- rbind(pointSet,newPoint)
+  pointIndex = pointIndex + 1
+  
+  #退出判断
+  if(pointIndex >= 2*queryN + noiseN){break}
 }
 
