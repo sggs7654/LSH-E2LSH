@@ -12,10 +12,12 @@ pointSet = data.frame(
 
 
 #【参数声明】
-queryN <- 10     #待生成的查询点总数
-noiseN <- 1000    #带生成的干扰点总数
+queryN <- 20     #待生成的查询点总数
+noiseN <- 500     #带生成的干扰点总数
 d = 3           #邻近点方块间距
 c = 3           #cRNN中的距离倍数参数c
+boardMin <- 0   #画布尺寸
+boardMax <- 1000
 
 
 
@@ -26,7 +28,7 @@ repeat{
   
   queryPoint <- c()
   repeat{                           #产生合格的新点x,y坐标
-    queryPoint <- floor(runif(n = 2,min = 0,max = 100))
+    queryPoint <- floor(runif(n = 2,min = boardMin,max = boardMax))
     if(check(pointSet,querySet,queryPoint[1],queryPoint[2],c)){break}
   }
   newPoint = data.frame(
@@ -69,7 +71,7 @@ repeat{
   #产生干扰点
   noisePoint <- c()
   repeat{                           #产生合格的新点x,y坐标
-    noisePoint <- floor(runif(n = 2,min = 0,max = 100))
+    noisePoint <- floor(runif(n = 2,min = boardMin,max = boardMax))
     if(check(pointSet,querySet,noisePoint[1],noisePoint[2],c)){break}
   }
   newPoint = data.frame(
