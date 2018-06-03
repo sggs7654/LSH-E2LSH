@@ -12,12 +12,12 @@ pointSet = data.frame(
 
 
 #【参数声明】
-queryN <- 20     #待生成的查询点总数
-noiseN <- 500     #带生成的干扰点总数
+queryN <- 1     #待生成的查询点总数
+noiseN <- 0     #带生成的干扰点总数
 d = 3           #邻近点方块间距
 c = 3           #cRNN中的距离倍数参数c
 boardMin <- 0   #画布尺寸
-boardMax <- 1000
+boardMax <- 10
 
 
 
