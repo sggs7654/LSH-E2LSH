@@ -27,7 +27,7 @@ for(i in (1:l)){
   g[i] <- list(h) #用例：g[[l]][[k]][1] -> r
 }
 
-#【对所有数据点建立哈希索引】2个点验算核对,KL变化观察数据格式变化是否合理
+#【对所有数据点建立哈希索引】
 library(hash)
 table <- list()
 for(i in (1:l)){
@@ -58,7 +58,7 @@ for(i in (1:nrow(pointSet))){ #i迭代pointSet
   }
 }
 
-#【查询/测试】这一块还没改过
+#【查询/测试】
 rightN <- 0 #查询正确计数器
 collisionN <- array(0,c(l,length(querySet))) #用来保存每个table中与查询点碰撞的点的数量
 for(i in querySet){
