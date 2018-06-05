@@ -1,6 +1,8 @@
+# Notes: Hamming LSH requair data values positive
+
 #【参数声明】
-k = 2
-l = 1
+k = 20
+l = 10
 
 #[找到最大坐标值C] 
 C = 0 # C大写
@@ -15,7 +17,7 @@ for(i in (1:nrow(pointSet))){
 
 #【建立局部敏感哈希函数簇】
 g <- list()
-dN <- 2 #代表点的维数(看一下名字N有没有被用过)
+dN <- 2 #代表点的维数
 for(i in (1:l)){
   h <- list()
   for(j in (1:k)){
@@ -25,7 +27,7 @@ for(i in (1:l)){
   g[i] <- list(h) #用例：g[[l]][[k]][1] -> r
 }
 
-#【对所有数据点建立哈希索引】待测试
+#【对所有数据点建立哈希索引】2个点验算核对,KL变化观察数据格式变化是否合理
 library(hash)
 table <- list()
 for(i in (1:l)){
@@ -37,9 +39,10 @@ for(i in (1:nrow(pointSet))){ #i迭代pointSet
     x <- c()
     for(m in (1:k)){
       r <- g[[j]][[m]][1]
-      cD <- floor(r/C) #cd代表'被选择的维度',表示r对c整除后落在点的哪个变量上
-      sD <- r %% c #sD代表"被选择的位数",表示用于哈希函数的具体变量的位数
-      if(pointSet[i,cD+1] > sD){
+      cD <- floor(r/(C+1)) #cd代表'被选择的维度',表示r在变量中的具体维度
+      sD <- r %% c #sD代表"被选择的位数",表示r在对应维度中的具体位数
+      if(sD == 0){sD <- r}
+      if(pointSet[i,cD+2] >= sD){
         xm <- 1
       } else {
         xm <- 0
@@ -65,7 +68,15 @@ for(i in querySet){
   for(j in (1:l)){            #j迭代table/g
     x <- c()
     for(m in (1:k)){
-      xm <- floor((g[[j]][[m]][1] * queryPoint[1,2] + g[[j]][[m]][2] * queryPoint[1,3] + g[[j]][[m]][3]) / r)
+      r <- g[[j]][[m]][1]
+      cD <- floor(r/(C+1)) #cd代表'被选择的维度',表示r在变量中的具体维度
+      sD <- r %% c #sD代表"被选择的位数",表示r在对应维度中的具体位数
+      if(sD == 0){sD <- r}
+      if(queryPoint[1,cD+2] >= sD){
+        xm <- 1
+      } else {
+        xm <- 0
+      }
       x <- c(x,xm)
     }
     queryPointKey <- v2s(x)
